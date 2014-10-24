@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="forgery.web.model.UploadedFile" table="UploadedFile">
+		<id name="id" type="int" column="id">
+			<generator class="native" />
+		</id>
+		<many-to-one name="user" column="user" class="forgery.web.model.User"
+		not-null="true" />
+		<many-to-one name="parent" column="parent" class="forgery.web.model.UploadedFile"
+		not-null="false" />
+		<property name="type" column="type">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">forgery.web.model.FileType</param>
+				<param name="type">12</param>
+			</type>
+		</property>
+		<property name="state" column="state">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">forgery.web.model.FileState</param>
+				<param name="type">12</param>
+			</type>
+		</property>
+		<property name="created" column="created" type="calendar" />
+		<property name="stateChange" column="stateChange" type="calendar" />
+		<property name="hash" column="hash" type="string" />
+		<property name="filename" column="filename" type="string" />
+		<property name="failureCounter" type="int">
+			<column name="failureCounter" not-null="true" default="0" />
+		</property>
+		<set name="children" cascade="save-update,delete" inverse="true">
+      <key column="parent" not-null="false"/>
+      <one-to-many class="forgery.web.model.UploadedFile"/>
+    </set>
+		<set name="rects" cascade="save-update,delete" inverse="true">
+			<key column="file" not-null="true"/>
+			<one-to-many class="forgery.web.model.ImageRect"/>
+		</set>
+		<set name="reports" cascade="save-update,delete" inverse="true">
+			<key column="file" not-null="true"/>
+			<one-to-many class="forgery.web.model.Report"/>
+		</set>
+	</class>
+</hibernate-mapping>

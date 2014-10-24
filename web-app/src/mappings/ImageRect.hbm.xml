@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="forgery.web.model.ImageRect" table="ImageRect">
+		<id name="id" type="int" column="id">
+			<generator class="native" />
+		</id>
+		<many-to-one name="file" column="file" class="forgery.web.model.UploadedFile"
+			not-null="true" />
+		
+		<property name="x" column="x" type="int" />
+		<property name="y" column="y" type="int" />
+		<property name="width" column="width" type="int" />
+		<property name="height" column="height" type="int" />
+	</class>
+</hibernate-mapping>

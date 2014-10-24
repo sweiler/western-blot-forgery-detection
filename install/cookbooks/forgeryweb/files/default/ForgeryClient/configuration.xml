@@ -1,0 +1,23 @@
+<config>
+  <threshold_width>
+    0.025
+  </threshold_width>
+  <threshold_height>
+    0.025
+  </threshold_height>
+  <threshold_sum>
+    0.0025
+  </threshold_sum>
+  <block_size>
+    16
+  </block_size>
+  <knn>
+    10
+  </knn>
+  <useCUDA>
+    false
+  </useCUDA>
+  <baseUrl>
+  	https://localhost/ForgeryWeb
+  </baseUrl>
+</config>

@@ -1,0 +1,23 @@
+<config>
+  <mailServer>
+    smtp.1und1.de
+  </mailServer>
+  <mailUser>
+    simon-weiler@online.de
+  </mailUser>
+  <mailPassword>
+    muFief7p
+  </mailPassword>
+  <fromMail>
+    info@simon-weiler.de
+  </fromMail>
+  <threshold_width>
+    0.025
+  </threshold_width>
+  <threshold_height>
+    0.025
+  </threshold_height>
+  <threshold_sum>
+    0.0025
+  </threshold_sum>
+</config>

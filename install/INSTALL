@@ -1,0 +1,180 @@
+--------------------------------------------------
+Western-blot forgery detection web application
+--------------------------------------------------
+
+INSTALL README
+-------------------
+
+The installation of the forgery-detection web application is a bit complicated,
+since the application has many dependencies. In this file the installation on an
+ubuntu 14.04 system is described. Additionally there is a Vagrantfile in this
+directory to configure a virtual machine running the application without worrying
+about the complex installation routine.
+
+Before we start, it is important for all installation routines, that you fill
+the SMTP configuration fields in the file cookbooks/forgeryweb/files/default/configuration.xml.
+This is needed in order to let the application send emails.
+The mail client will always use SSL/TLS for the SMTP connection.
+
+
+Troubleshooting
+---------------
+
+If there are any problems with the server, look in the log file in
+/var/log/tomcat7/localhost.*.log
+
+If you cannot even connect to the application, you should take a look
+in /var/log/tomcat7/catalina.org and /var/log/apache2/mod_jk.log.
+
+The client writes logs to the standard output, but if you run it as daemon, it goes
+instead to /opt/forgery/client/log and /opt/forgery/client/logErr.
+
+
+Install with Vagrant
+--------------------
+
+	1. Install Vagrant, available for all major operating systems.
+	   You can get Vagrant here: https://www.vagrantup.com/
+	   Or in the packaging system of your linux distribution
+	   
+	2. Open this folder in a terminal and run "vagrant up".
+	   This will get vagrant to download a Ubuntu 14.04 image and provision it
+	   with all required packages and configuration and start the forgery web-
+	   application server and run a worker client.
+	   IMPORTANT: This step will take some time, up to an hour.
+	   
+    3. The application is then available in your webbrowser via https://localhost:7082/ForgeryWeb
+    
+    4. Additionally there is a phpmyadmin installed under http://localhost:7081/phpmyadmin.
+       You can log in with username "forgeryweb" and password "eZQn4wsG2csHR6fM".
+       
+    5. The installed worker client will work only with small files, since the VM has not so
+       much RAM. If you want to run the client on your host machine, you can login to the VM
+       with "vagrant ssh" and stop the client with "sudo service forgery-client stop".
+       How you start the client on the host machine, look at the last both chapters in this INSTALL file.
+       
+       
+Install on Ubuntu 14.04
+-----------------------
+
+First of all, you can install this application on all major operating systems, but this
+README focuses on Ubuntu. All files referenced in this chapter are available in the folder
+cookbooks/forgeryweb/files/default
+
+	1. Make sure you have enabled the multiverse repository in your /etc/apt/sources.list.
+	   The "sources.list" included in the file directory is the default sources.list from
+	   Ubuntu 14.04 with multiverse enabled.
+	
+	2. Run "sudo apt-get update".
+	
+	3. Install the following packages:
+		- apache2           : Webserver
+		- tomcat7           : Java servlet engine
+		- mysql-server 		: Database management system
+		- libapache2-mod-jk : Connector between apache and tomcat
+		- libopencv2.4-java : OpenCV image processing library for java
+		- libcudart5.5      : CUDA library, required even if you doesn't want to use CUDA
+		- libnppc5.5        : Required by CUDA
+		- libnppi5.5        : ------ " ------
+		- libnpps5.5		: ------ " ------
+		- libcufft5.5       : ------ " ------
+		- imagemagick       : Command line tool for image processing
+		- poppler-utils     : Command line tool for PDF image extraction
+		
+   4. Run "mysql -u root < cookbooks/forgeryweb/files/default/init_mysql.sql"
+   	   -> This will initialize the database and create a user for the application.
+   
+   5. Run "sudo mkdir -p /opt/forgeryweb/uploadedFiles"
+      and "sudo chmod 777 /opt/forgeryweb/uploadedFiles"
+       -> This will create a directory for the files uploaded by a user and grant access to
+          the web application.
+          
+   6. Copy the file "forgery.conf" to "/etc/apache2/sites-available/forgery.conf".
+       -> "forgery.conf" contains configuration for the connection between apache and tomcat.
+   
+   7. Copy the file "catalina.sh" to "/usr/share/tomcat7/bin/catalina.sh"
+       -> This adds a environment variable to locate the opencv-java shared object.
+   
+   8. Enable some apache configuration:
+   	    - run "sudo a2ensite forgery"
+   	    - run "sudo a2enmod jk"
+   	    - run "sudo a2enmod ssl"
+   	    
+   9. Copy the "ssl" directory to "/etc/apache2/ssl".
+       -> This directory contains all files for the SSL server certificate.
+   
+   10. Copy the file "workers.properties" to "/etc/apache2/workers.properties".
+        -> The "workers.properties" file contains configuration for the connection
+           between apache and tomcat.
+           
+   11. Copy the file "server.xml" to "/etc/tomcat7/server.xml".
+        -> In this file the tomcat-side connector to apache is enabled.
+        
+   12. Copy "jk.conf" to "/etc/apache2/mods-available/jk.conf".
+        -> Here only the path to the previously copied "workers.properties"
+           is changed.
+           
+   13. Copy "configuration.xml" to "/var/lib/tomcat7/configuration.xml"
+        -> This is the actual application configuration. As previously
+           mentioned, you need to insert your SMTP credentials here.
+           
+   14. Copy the "ForgeryWeb.war" to "/var/lib/tomcat7/webapps/ForgeryWeb.war"
+        -> This is the actual web application. Dropping it into this folder will
+           auto-deploy it in tomcat.
+           
+   15. Restart apache2 and tomcat7: "sudo service {apache2,tomcat7} restart"
+   
+   16. You are done, the application is available on https://localhost/ForgeryWeb
+   
+   
+Run the client
+--------------
+
+	1. If you want to run the client, you need the following packages,
+	   which are all installed if you have done the last chapter.
+	   As mentioned in the last chapter, you have to enable the multiverse
+	   repository fist, if not already done.
+		- libopencv2.4-java : OpenCV image processing library for java
+		- libcudart5.5      : CUDA library, required even if you doesn't want to use CUDA
+		- libnppc5.5        : Required by CUDA
+		- libnppi5.5        : ------ " ------
+		- libnpps5.5		: ------ " ------
+		- libcufft5.5       : ------ " ------
+		
+	2. Copy the "libopencv_java249.so" from
+	   "/var/lib/tomcat7/webapps/ForgeryWeb/WEB-INF/lib/libopencv_java249.so"
+	   to "cookbooks/forgeryweb/files/default/ForgeryClient/linux-x86-64",
+	   if you have installed the web application on your machine. If not, look for this file
+	   in the ForgeryWeb.war.
+		
+	3. 'cd' to the ForgeryClient directory in cookbooks/forgeryweb/files/default.
+	
+	4. Set the baseUrl property in "configuration.xml" to the URL where the server runs.
+	   This MUST be a https URL.
+	
+	5. Run "java -Djava.library.path=linux-x86-64/ -jar ForgeryDetector.jar".
+	
+	6. The client should connect to the server and wait for tasks.
+	   If there is a new task, it will process this task and afterwards wait again.
+	   
+	   
+Install the client as daemon
+----------------------------
+
+	1. Make sure you have done step 1 of the previous chapter.
+
+	2. Copy the folder "ForgeryClient" to "/opt/forgery/client"
+	
+	3. Copy the "libopencv_java249.so" from
+	   "/var/lib/tomcat7/webapps/ForgeryWeb/WEB-INF/lib/libopencv_java249.so"
+	   to "/opt/forgery/client/linux-x86-64",
+	   if you have installed the web application on your machine. If not, look for this file
+	   in the ForgeryWeb.war.
+	   
+    4. Copy the file "client.sh" to "/etc/init.d/forgery-client".
+    
+    5. Run "sudo chmod 744 /etc/init.d/forgery-client"
+    
+    6. Run "sudo update-rc.d forgery-client defaults"
+    
+    7. Start the client daemon with "sudo service forgery-client start".
