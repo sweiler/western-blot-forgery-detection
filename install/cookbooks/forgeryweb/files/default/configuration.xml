@@ -1,0 +1,23 @@
+<config>
+  <mailServer>
+    SMTP_SERVER
+  </mailServer>
+  <mailUser>
+    SMTP_USER
+  </mailUser>
+  <mailPassword>
+    SMTP_PASSWORD
+  </mailPassword>
+  <fromMail>
+    FROM_MAIL
+  </fromMail>
+  <threshold_width>
+    0.025
+  </threshold_width>
+  <threshold_height>
+    0.025
+  </threshold_height>
+  <threshold_sum>
+    0.0025
+  </threshold_sum>
+</config>

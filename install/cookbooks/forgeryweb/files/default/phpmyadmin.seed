@@ -1,0 +1,2 @@
+phpmyadmin phpmyadmin/dbconfig-install boolean false
+phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2
