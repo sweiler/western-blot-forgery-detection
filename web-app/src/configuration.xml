@@ -1,15 +1,15 @@
 <config>
   <mailServer>
-    smtp.1und1.de
+    MAILSERVER
   </mailServer>
   <mailUser>
-    simon-weiler@online.de
+    MAILUSER
   </mailUser>
   <mailPassword>
-    muFief7p
+    MAILPWD
   </mailPassword>
   <fromMail>
-    info@simon-weiler.de
+    MAILADDR
   </fromMail>
   <threshold_width>
     0.025
