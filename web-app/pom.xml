@@ -34,9 +34,9 @@
         <dependency>
             <groupId>opencv</groupId>  
             <artifactId>java-bindings</artifactId>  
-            <version>2.4.9</version> 
+            <version>2.4.8</version> 
             <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/opencv-249.jar</systemPath>
+            <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/opencv-248.jar</systemPath>
         </dependency>
         <dependency>
 	        <groupId>org.apache.logging.log4j</groupId>

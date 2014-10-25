@@ -45,16 +45,13 @@ import org.opencv.core.Scalar;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 
-import com.googlecode.javacv.cpp.opencv_core.CvMat;
-import com.googlecode.javacv.cpp.opencv_flann.Index;
-import com.googlecode.javacv.cpp.opencv_flann.SearchParams;
+
 import flann.Flann;
 import flann.FlannAlgorithmType;
 import flann.FlannCentersInitType;
 import flann.FlannDistanceType;
 import flann.FlannLogLevelType;
-import static com.googlecode.javacv.cpp.opencv_core.*;
-import static com.googlecode.javacv.cpp.opencv_flann.*;
+
 
 public class Utility {
 

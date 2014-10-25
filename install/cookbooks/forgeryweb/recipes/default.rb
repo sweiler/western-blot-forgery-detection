@@ -114,9 +114,14 @@ service 'tomcat7' do
   action [:restart, :enable]
 end
 
-link "/opt/forgery/client/linux-x86-64/libopencv_java249.so" do
-	to "/var/lib/tomcat7/webapps/ForgeryWeb/WEB-INF/lib/libopencv_java249.so"
+link "/var/lib/tomcat7/webapps/ForgeryWeb/WEB-INF/lib/libopencv_java248.so" do
+    to "/usr/lib/jni/libopencv_java248.so"
 end
+
+link "/opt/forgery/client/linux-x86-64/libopencv_java248.so" do
+	to "/usr/lib/jni/libopencv_java248.so"
+end
+
 
 cookbook_file "/etc/init.d/forgery-client" do
 	source "client.sh"
