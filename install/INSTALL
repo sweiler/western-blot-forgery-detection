@@ -41,7 +41,7 @@ Install with Vagrant
 	   This will get vagrant to download a Ubuntu 14.04 image and provision it
 	   with all required packages and configuration and start the forgery web-
 	   application server and run a worker client.
-	   IMPORTANT: This step will take some time, up to an hour.
+	   IMPORTANT: This step will take some time, possibly up to an hour.
 	   
     3. The application is then available in your webbrowser via https://localhost:7082/ForgeryWeb
     
@@ -165,11 +165,9 @@ Install the client as daemon
 
 	2. Copy the folder "ForgeryClient" to "/opt/forgery/client"
 	
-	3. Copy the "libopencv_java249.so" from
-	   "/var/lib/tomcat7/webapps/ForgeryWeb/WEB-INF/lib/libopencv_java249.so"
-	   to "/opt/forgery/client/linux-x86-64",
-	   if you have installed the web application on your machine. If not, look for this file
-	   in the ForgeryWeb.war.
+	3. Copy the "libopencv_java248.so" from
+	   "/usr/lib/jni/libopencv_java249.so"
+	   to "/opt/forgery/client/linux-x86-64".
 	   
     4. Copy the file "client.sh" to "/etc/init.d/forgery-client".
     
