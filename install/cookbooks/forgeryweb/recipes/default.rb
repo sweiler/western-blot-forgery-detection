@@ -24,6 +24,7 @@ package 'libnpps5.5'
 package 'libcufft5.5'
 package 'imagemagick'
 package 'poppler-utils'
+package 'libflann1.8'
 
 service "mysql" do
   action [:start, :enable]

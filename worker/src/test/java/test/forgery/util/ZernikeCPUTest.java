@@ -50,7 +50,7 @@ public class ZernikeCPUTest extends ZernikeCPU {
 	public void testgetAverageIntensity() {
 		
 		int x=0; int block_size = 16;
-		int[] testArray = new int[block_size*block_size];
+		byte[] testArray = new byte[block_size*block_size];
 		for(; x < (block_size*block_size); x++) {
 			testArray[x] = 0;
 		}

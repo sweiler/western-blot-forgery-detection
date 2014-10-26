@@ -4,6 +4,7 @@ import static jcuda.driver.JCudaDriver.*;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -33,6 +35,7 @@ import jcuda.driver.CUdevice;
 import jcuda.driver.CUdeviceptr;
 import jcuda.driver.CUfunction;
 import jcuda.driver.CUmodule;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.opencv.core.Core;
@@ -44,7 +47,6 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
-
 
 import flann.Flann;
 import flann.FlannAlgorithmType;
@@ -386,11 +388,16 @@ public class Utility {
 				- config.block_size + 1));
 
 		int[] data = new int[width * height];
+		Raster r = gray_img.getData();
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 			
-				data[x * height + y] = gray_img.getRGB(x, y) & 0xFF;
+				data[x * height + y] = r.getSample(x, y, 0);
 			}
+		}
+		byte[] byte_data = new byte[data.length];
+		for (int i = 0; i < data.length; i++) {
+			byte_data[i] = (byte) data[i];
 		}
 
 
@@ -404,7 +411,7 @@ public class Utility {
 		for (int x = 0; x < gray_img.getWidth(); x++) {
 			for (int y = 0; y < gray_img.getHeight(); y++) {
 				ZernikeCPU task = new ZernikeCPU(config.block_size, width,
-						height, data, config.range_threshold,
+						height, byte_data, config.range_threshold,
 						config.avg_intensity_threshold, output, x, y);
 				tasks.add(service.submit(task));
 			}
@@ -590,7 +597,10 @@ public class Utility {
 	}
 
 	public Set<MatchPair> filterMatches(Set<MatchPair> pairs) {
+		log.info("BEGIN filterMatches");
 		Set<MatchPair> mark_blocks = new HashSet<>();
+		int i = 0;
+		int size = pairs.size();
 		for (Iterator<MatchPair> it = pairs.iterator(); it.hasNext();) {
 			MatchPair t = it.next();
 			int num_near = 0;
@@ -611,18 +621,15 @@ public class Utility {
 
 				}
 			}
-			int area = (xMax - xMin) * (yMax - yMin);
+
 			if (num_near > 70 && (dist_sum / num_near) > 20
 					&& (dist_sum / num_near) < 50) {
-				System.out.println(area + " " + num_near + " "
-						+ (dist_sum / num_near));
-				// mark_blocks.add(new Rectangle(xMin, yMin, xMax - xMin + 16,
-				// yMax - yMin + 16));
 				mark_blocks.add(t);
 			} else {
 				it.remove();
 			}
-
+			System.out.println(((int) (((double) i) / size) * 100) + "% filtered");
+			i++;
 		}
 
 		return mark_blocks;

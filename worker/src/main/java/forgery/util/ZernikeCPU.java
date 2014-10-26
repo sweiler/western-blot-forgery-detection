@@ -11,11 +11,11 @@ public class ZernikeCPU implements Runnable {
 	
 	private int block_size, width, height, range_threshold,
 			avg_intensity_threshold, xIndex, yIndex;
-	private int[] input_image;
+	private byte[] input_image;
 	private double[] result_matrix;
 
 	public ZernikeCPU(int block_size, int width, int height,
-			int[] input_image, int range_threshold,
+			byte[] input_image, int range_threshold,
 			int avg_intensity_threshold, double[] result_matrix, int x, int y) {
 		this.block_size = block_size;
 		this.width = width;
@@ -144,20 +144,20 @@ public class ZernikeCPU implements Runnable {
 		return Math.sqrt((x * x + y * y));
 	}
 
-	protected static double getAverageIntensity(int block_size, int[] input_image2,
+	protected static double getAverageIntensity(int block_size, byte[] input_image,
 			int block_start_pos, int height) {
 		int x;
 		int y;
 		double avg = 0.0;
 		for (y = 0; y < block_size; y++) {
 			for (x = 0; x < block_size; x++) {
-				avg += input_image2[block_start_pos + (x * height + y)] & 0xFF;
+				avg += input_image[block_start_pos + (x * height + y)] & 0xFF;
 			}
 		}
 		return avg / ((double) (block_size * block_size));
 	}
 
-	protected static int getRange(int block_size, int[] input_image2,
+	protected static int getRange(int block_size, byte[] input_image,
 			int block_start_pos, int height) {
 		int min = 255;
 		int max = 0;
@@ -165,11 +165,11 @@ public class ZernikeCPU implements Runnable {
 		int y;
 		for (y = 0; y < block_size; y++) {
 			for (x = 0; x < block_size; x++) {
-				if ((input_image2[block_start_pos + (x * height + y)] & 0xFF) > max) {
-					max = input_image2[block_start_pos + (x * height + y)] & 0xFF;
+				if ((input_image[block_start_pos + (x * height + y)] & 0xFF) > max) {
+					max = input_image[block_start_pos + (x * height + y)] & 0xFF;
 				}
-				if ((input_image2[block_start_pos + (x * height + y)] & 0xFF) < min) {
-					min = input_image2[block_start_pos + (x * height + y)] & 0xFF;
+				if ((input_image[block_start_pos + (x * height + y)] & 0xFF) < min) {
+					min = input_image[block_start_pos + (x * height + y)] & 0xFF;
 				}
 			}
 		}
