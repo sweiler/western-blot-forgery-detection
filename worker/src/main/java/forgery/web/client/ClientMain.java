@@ -153,7 +153,7 @@ public class ClientMain implements Runnable {
 				byte[] filedata = Base64
 						.decodeBase64((String) task.get("data"));
 
-				BufferedImage img_colored = ImageIO
+				BufferedImage img = ImageIO
 						.read(new ByteArrayInputStream(filedata));
 
 				// First pass: focus on background copies
@@ -163,8 +163,6 @@ public class ClientMain implements Runnable {
 				config.range_threshold = 0;
 				config.avg_intensity_threshold = 0;
 
-				BufferedImage img = Utility.instance().convertToGreyscale(
-						img_colored);
 
 				double[] features = Utility.instance().getZernikeFeatures(img,
 						rects, config);

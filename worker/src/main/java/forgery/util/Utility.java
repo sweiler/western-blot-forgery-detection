@@ -94,6 +94,7 @@ public class Utility {
 	}
 
 	public BufferedImage convertToGreyscale(BufferedImage input) {
+
 		BufferedImage img = new BufferedImage(input.getWidth(),
 				input.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
 		for (int x = 0; x < input.getWidth(); x++) {
@@ -108,6 +109,7 @@ public class Utility {
 			}
 		}
 		return img;
+		
 	}
 
 	public BufferedImage imread(String filename) throws IOException {

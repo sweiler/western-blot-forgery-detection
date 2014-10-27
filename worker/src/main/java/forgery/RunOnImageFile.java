@@ -28,7 +28,7 @@ import forgery.util.Utility;
 
 public class RunOnImageFile {
 
-	private static String input_filename = "test_images/base_attacks_rotate_5_scale_105.png";
+	private static String input_filename = "/home/simon/safe/dev/ForgeryDetector/test_images/base_attacks_rotate_5_scale_105.png";
 	private static String output_filename = "output2.png";
 
 	public static void main(String[] args) {
@@ -40,8 +40,7 @@ public class RunOnImageFile {
 		try {
 			Config config = util.getConfiguration();
 
-			BufferedImage img = util.convertToGreyscale(util
-					.imread(input_filename));
+			BufferedImage img = util.imread(input_filename);
 
 			List<Rectangle> areas = util.getRegionsOfInterest(img, config);
 			double[] results;
@@ -71,23 +70,15 @@ public class RunOnImageFile {
 
 			Set<MatchPair> mark_blocks = util.matchFeatures(results, config);
 			/*
-			FileReader fr = new FileReader("mark_blocks2.txt");
-			BufferedReader br = new BufferedReader(fr);
-			String line = br.readLine();
-			Set<MatchPair> mark_blocks = new HashSet<MatchPair>();
-			while (line != null) {
-				Rectangle first = new Rectangle();
-				Rectangle second = new Rectangle();
-				processLine(line, first);
-				line = br.readLine();
-				if(line != null) {
-					processLine(line, second);
-					mark_blocks.add(new MatchPair(first, second));
-					line = br.readLine();
-				}
-			}
-			*/
-			
+			 * FileReader fr = new FileReader("mark_blocks2.txt");
+			 * BufferedReader br = new BufferedReader(fr); String line =
+			 * br.readLine(); Set<MatchPair> mark_blocks = new
+			 * HashSet<MatchPair>(); while (line != null) { Rectangle first =
+			 * new Rectangle(); Rectangle second = new Rectangle();
+			 * processLine(line, first); line = br.readLine(); if(line != null)
+			 * { processLine(line, second); mark_blocks.add(new MatchPair(first,
+			 * second)); line = br.readLine(); } }
+			 */
 
 			// matches = util.filterMatches(matches);
 
@@ -151,6 +142,5 @@ public class RunOnImageFile {
 		rect.height = w;
 		rect.width = w;
 	}
-
 
 }
