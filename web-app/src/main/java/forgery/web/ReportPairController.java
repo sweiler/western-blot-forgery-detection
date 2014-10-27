@@ -117,6 +117,10 @@ public class ReportPairController extends HttpServlet {
 				}
 			}
 			
+			BufferedImage diffImg = output.getSubimage(rectWidth * 2, 0, rectWidth, rectWidth);
+			
+			increaseLocalContrast(diffImg);
+			
 			drawRedRect(outputGraphics, rects1[1], 0);
 			drawRedRect(outputGraphics, rects2[1], 1);
 			
@@ -133,6 +137,33 @@ public class ReportPairController extends HttpServlet {
 
 	}
 	
+	public void increaseLocalContrast(BufferedImage diffImg) {
+		int[] histogram = new int[256];
+		for(int x = 0; x < diffImg.getWidth(); x++) {
+			for(int y = 0; y < diffImg.getHeight(); y++) {
+				int v = toGreyscale(diffImg.getRGB(x, y));
+				histogram[v]++;
+			}
+		}
+		int[] cdf = new int[256];
+		for(int i = 0; i < 256; i++) {
+			cdf[i] = histogram[i];
+			if(i != 0)
+				cdf[i] += cdf[i-1];
+		}
+		
+		int n = diffImg.getHeight() * diffImg.getWidth();
+		
+		for(int x = 0; x < diffImg.getWidth(); x++) {
+			for(int y = 0; y < diffImg.getHeight(); y++) {
+				int v = toGreyscale(diffImg.getRGB(x, y));
+				int newValue = (int) (255 * (cdf[v] - cdf[0])/(n - cdf[0]));
+				int newValueRGB = newValue << 16 | newValue << 8 | newValue;
+				diffImg.setRGB(x, y, newValueRGB);
+			}
+		}
+	}
+
 	private void drawRedRect(Graphics2D outputGraphics, Rectangle red, int xMod) {
 		outputGraphics.setColor(new Color(0x40FF0000, true));
 		outputGraphics.fillRect(red.x + xMod * rectWidth, red.y, red.width, red.height);
